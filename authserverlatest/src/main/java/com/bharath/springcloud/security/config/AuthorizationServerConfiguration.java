@@ -58,9 +58,25 @@ private JWKSet buildJWKSet()throws KeyStoreException,NoSuchAlgoritmException,Cer
         }
 
         //Al parecer esto es la configuracion del provider para que reconozca la url http://localhost:8080 como provide (no explicó nada mas)
-        @Bean
-         AuthorizationServerSettings authorizationServerSettings() {
+            @Bean
+            AuthorizationServerSettings authorizationServerSettings() {
             return  AuthorizationServerSettings.builder().issuer(providerUrl).build();
                }
+
+               //Esto es para registrar la aplicacion cliente
+               @Bean
+               public RegisteredClientRepository registeredClientRepository() {
+                RegisteredClient registeredClient = RegisteredClient.withId("couponservice")
+                .clientId("couponclientapp")
+                .clientSecret("9999")
+                .clientAuthorizationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) //vamos a ocupar este grandtype...
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN) //...mas este este grandtype
+                .redirectUri("https://oidcdebugger.com/debug") //Oicdebugger nos permitirá obtener un authorization code  cuando nos loguiemos desde el navegador.
+                .scope("read")
+                .scope("write")
+                .build();
+                return new InMemoryRegisteredClientRepository(registeredClient);
+        }
 
         }
