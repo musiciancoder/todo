@@ -2,6 +2,8 @@
 //@Configuration
 public class AuthorizationServerConfiguration throws Exception{
 
+    private static final String ROLES_CLAIM = "roles";
+
 @Autowired
 private UserDetailsService userDetailsService
 
@@ -88,5 +90,28 @@ private JWKSet buildJWKSet()throws KeyStoreException,NoSuchAlgoritmException,Cer
                public TokenSettings tokenSettings(){
                return TokenSettings.builder().accessTokenTimeToLive(Duration.ofMinutes(30l)).build();
         }
+
+
+        //configure token Customizer para tener acceso a los roles en el payload del token
+             @Bean
+             public OAuth2TokenCustomizer<JwtEncodingContext> jwtEncodingContext(){
+                return new OAuth2TokenCustomizer<JwtEncodingContext>(){ //OAuth2TokenCustomizer es una interfaz funcional
+
+                    @Override
+                    public void customize (JwtEncodingContext context){
+                        return context ->{
+                            if(context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)){
+                                Authentication principal = context.getPrincipal();
+                             Set <String> authorities=    principal.getAuthorities().stream()
+                                 .map(GrantedAuthority:getAuthority)
+                                 .collect(Collectors.toSet());
+                                 context.getClaims().claim("roles", authorities); //lo agregamos como un nuevo claim a JWT token
+        }
+        }
+
+        }
+        }
+        }
+
 
         }
