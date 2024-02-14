@@ -14,4 +14,9 @@ It exposes as follows: oauth2/authorize, oauth2/token, etc. We need to ensure th
         return http.build();
     }
 
+    @Bean
+    public PasswordEncoder bcryptPasswordEncoder() {
+        return new BcryptPasswordEncoder();
+    }
+
 }

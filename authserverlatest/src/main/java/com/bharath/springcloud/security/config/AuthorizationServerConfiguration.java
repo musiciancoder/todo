@@ -17,6 +17,9 @@ private String alias;
 @Value("${providerUrl}")
 private String providerUrl;
 
+@Autowired
+private PasswordEncoder passwordEncoder;
+
 @Bean
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public SecurityFilterChain suthServerSecurityFilterChain(HttpSecurity http){
@@ -68,7 +71,7 @@ private JWKSet buildJWKSet()throws KeyStoreException,NoSuchAlgoritmException,Cer
                public RegisteredClientRepository registeredClientRepository() {
                 RegisteredClient registeredClient = RegisteredClient.withId("couponservice")
                 .clientId("couponclientapp")
-                .clientSecret("9999")
+                .clientSecret(passwordEncoder.encode("9999")) //Now our client secret is encoded and the password encoder will automatically used for encoding and decoding other password information within our application, when the user details service comes into picture
                 .clientAuthorizationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) //vamos a ocupar este grandtype...
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN) //...mas este este grandtype
