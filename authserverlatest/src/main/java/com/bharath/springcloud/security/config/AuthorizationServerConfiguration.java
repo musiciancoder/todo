@@ -14,6 +14,9 @@ private String password
 @Value("${alias}")
 private String alias;
 
+@Value("${providerUrl}")
+private String providerUrl;
+
 @Bean
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public SecurityFilterChain suthServerSecurityFilterChain(HttpSecurity http){
@@ -53,4 +56,11 @@ private JWKSet buildJWKSet()throws KeyStoreException,NoSuchAlgoritmException,Cer
         }
 
         }
+
+        //Al parecer esto es la configuracion del provider para que reconozca la url http://localhost:8080 como provide (no explicó nada mas)
+        @Bean
+         AuthorizationServerSettings authorizationServerSettings() {
+            return  AuthorizationServerSettings.builder().issuer(providerUrl).build();
+               }
+
         }
