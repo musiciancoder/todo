@@ -71,15 +71,22 @@ private JWKSet buildJWKSet()throws KeyStoreException,NoSuchAlgoritmException,Cer
                public RegisteredClientRepository registeredClientRepository() {
                 RegisteredClient registeredClient = RegisteredClient.withId("couponservice")
                 .clientId("couponclientapp")
-                .clientSecret(passwordEncoder.encode("9999")) //Now our client secret is encoded and the password encoder will automatically used for encoding and decoding other password information within our application, when the user details service comes into picture
+                .clientSecret(passwordEncoder.encode("9999")) //9999 es el client secret por si acaso. Now our client secret is encoded and the password encoder will automatically used for encoding and decoding other password information within our application, when the user details service comes into picture
                 .clientAuthorizationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) //vamos a ocupar este grandtype...
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN) //...mas este este grandtype
                 .redirectUri("https://oidcdebugger.com/debug") //Oicdebugger nos permitirá obtener un authorization code  cuando nos loguiemos desde el navegador.
                 .scope("read")
                 .scope("write")
+                .tokenSettings(tokenSettings()) //permite variar los tettings del token (principalmente duracion)
                 .build();
                 return new InMemoryRegisteredClientRepository(registeredClient);
+        }
+
+        //aumentar la duracion de validez del token
+               @Bean
+               public TokenSettings tokenSettings(){
+               return TokenSettings.builder().accessTokenTimeToLive(Duration.ofMinutes(30l)).build();
         }
 
         }
