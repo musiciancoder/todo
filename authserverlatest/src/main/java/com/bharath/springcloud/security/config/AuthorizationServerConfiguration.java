@@ -46,7 +46,7 @@ public JWTSource<SecurityContext> jwtSource()throws KeyStoreException,NoSuchAlgo
 //Este es el método que setea el keystore (q es donde almacenamos las llaves) a JWT
 private JWKSet buildJWKSet()throws KeyStoreException,NoSuchAlgoritmException,CertificateException{ //
         KeyStore keystore=KeyStore.getInstance("pkcs12");
-        try(InputStream fis=this.getClass().getResourceAsStream(keyFile);){
+        try(InputStream fis=this.getClass().getClassLoader().getResourceAsStream(keyFile);){
         keysStore.load(fis,alias.toCharArray());
         return JWKSet.load(keyStore,new PasswordLookup(){ //se le pasa por parametro el keystore y el passowrd para ingresar al keystore que setiamos en la clase "the java keytool"
 
